@@ -1,11 +1,11 @@
-# LIVE GO
-Real-time football match streaming and chat platform.
-User can watch football matches live and also can do live chats.
+# Recipie Realm
+Recipe platform.
+User can view, create recipies and also can do  chats with users.
 
 ## Features
 - User authentication
-- Live match updates
-- Real-time chat
+- 
+- 
 
 
 ## Tech Stack
