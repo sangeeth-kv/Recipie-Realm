@@ -65,6 +65,9 @@ export class AuthController implements IAuthController{
     }
     getMe=async(req: Request, res: Response, next: NextFunction):Promise<void>=>{
         try {
+
+            console.log("Reacges")
+
             const userId=req.user?.user_Id;
 
             if(!userId){
@@ -74,6 +77,37 @@ export class AuthController implements IAuthController{
             const user=await this.authService.getMe(userId)
 
             apiResponse<GetMeResponseDTO>(res,200,true,"USER_FETCHED",user)
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+    refresh= async(req: Request, res: Response, next: NextFunction):Promise<void> => {
+        try {
+            const refreshToken=req.cookies.refreshToken
+
+            if(!refreshToken){
+                throw new AppError("NOT_AUTHENTICATED",401)
+            }
+
+            const result=await this.authService.refresh(refreshToken)
+
+            res.cookie("accessToken",result.newAccessToken,{
+                httpOnly:true,
+                secure:ENV.NODE_ENV==="production",
+                sameSite:"strict",
+                maxAge: 15 * 60 * 1000,
+            })
+
+            res.cookie("refreshToken",result.newRefreshToken,{
+                httpOnly:true,
+                secure:ENV.NODE_ENV==="production",
+                sameSite:"strict",
+                maxAge:7 * 24 * 60 * 60 * 1000 // 7 days
+            })
+
+            apiResponse(res, 200, true, "TOKEN_REFRESHED");
+            
         } catch (error) {
             console.log(error)
             next(error)

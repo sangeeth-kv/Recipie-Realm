@@ -6,7 +6,7 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   if (isLoading) return <h1>Loading...</h1>;
 
-  if (isError || !user) return <Navigate to="/auth/signin" />;
+  // if (isError || !user) return <Navigate to="/auth/signin" />;
 
   return <>{children}</>;
 }

@@ -1,4 +1,7 @@
 import axios from "axios";
+import { refreshService } from "../services/refreshService";
+import type { QueueItem } from "../types/QueueItem";
+import type { CustomAxiosRequestConfig } from "../interface/CustomAxiosRequestConfig";
 
 const axiosInstance=axios.create({
     baseURL:import.meta.env.VITE_BACKEND_URL,
@@ -12,41 +15,119 @@ const axiosInstance=axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("accessToken");
+    // const token = localStorage.getItem("accessToken");
 
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+    // if (token) {
+    //   config.headers.Authorization = `Bearer ${token}`;
+    // }
 
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-const inValidMessages:string[]=[
-    "INVALID_TOKEN",
-    "UNAUTHORIZED",
-    "INVALID_USER",
-    "USER_NOT_FOUND",
+// const inValidMessages:string[]=[
+//     "INVALID_TOKEN",
+//     "UNAUTHORIZED",
+//     "INVALID_USER",
+//     "USER_NOT_FOUND",
 
-]
+// ]
+
+// axiosInstance.interceptors.response.use(
+//   (response) => response,
+//   (error) => {
+//     console.log("error respose : ",error.response.data)
+//     if (error.response?.status === 401) {
+//       console.log("Unauthorized - maybe token expired");
+//       // redirect to login or refresh token
+//     }
+//     if(inValidMessages.includes(error?.response?.data?.message)){
+//         // window.location.href = "/auth/signin"
+//         return Promise.reject(error);
+//     }
+
+//     return Promise.reject(error);
+//   }
+// );
+
+
+let isRefreshing = false;
+let failedQueue: QueueItem[] = [];
+
+const processQueue = (error: unknown, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) prom.reject(error);
+    else prom.resolve(token);
+  });
+
+  failedQueue = [];
+};
+
+
+
 
 axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    console.log("error respose : ",error.response.data)
-    if (error.response?.status === 401) {
-      console.log("Unauthorized - maybe token expired");
-      // redirect to login or refresh token
+  (response) =>{
+    console.log("✅ RESPONSE INTERCEPTED");
+    return response;
+  },
+  async (error) => {
+    console.log("🔥 INTERCEPTOR HIT");
+
+    const originalRequest = error.config as CustomAxiosRequestConfig;
+
+    if (!originalRequest) {
+      return Promise.reject(error);
     }
-    if(inValidMessages.includes(error?.response?.data?.message)){
-        // window.location.href = "/auth/signin"
-        return Promise.reject(error);
+
+    console.log(error.response)
+
+    console.log("FULL ERROR:", error.response?.data);
+
+    const message = error?.response?.data?.message;
+
+    console.log("message in response : ",message)
+
+    // 🔥 HANDLE TOKEN EXPIRED
+    if (message === "TOKEN_EXPIRED" && !originalRequest._retry) {
+
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        }).then(() => {
+           return axiosInstance(originalRequest);
+        });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        await refreshService()
+
+        processQueue(null);
+        isRefreshing = false;
+
+        return axiosInstance(originalRequest);
+
+      } catch (err) {
+        processQueue(err, null);
+        isRefreshing = false;
+
+        // ❌ refresh failed → logout
+        window.location.href = "/auth/signin";
+        return Promise.reject(err);
+      }
+    }
+
+    // ❌ INVALID TOKEN → logout immediately
+    if (message === "INVALID_TOKEN") {
+      window.location.href = "/auth/signin";
     }
 
     return Promise.reject(error);
   }
 );
-
 
 export default axiosInstance;

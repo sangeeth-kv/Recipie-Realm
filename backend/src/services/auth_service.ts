@@ -8,10 +8,12 @@ import { IUserRepository } from "../interface/IUserRepository";
 import { IAuthService } from "../interface/IAuthService";
 import { SigninRequestDTO, SigninResponseDTO } from "../dtos/signin.dto";
 import { TokenUserPayload } from "../types/TokenUserPayload";
-import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
+import { generateAccessToken, generateRefreshToken, verifyToken } from "../utils/jwt";
 import { ITokenStore } from "../interface/IRedisHelper";
 import { GetMeResponseDTO } from "../dtos/getMeResponse.dto";
 import mongoose from "mongoose";
+import { ENV } from "../config/env";
+import { RefreshResponseDTO } from "../dtos/refreshResponse.dto";
 
 export class AuthService implements IAuthService {
     constructor(private userRepository: IUserRepository,private tokenStore:ITokenStore){}
@@ -117,8 +119,51 @@ export class AuthService implements IAuthService {
             }
     }
 
-    
+    refresh=async(data: string):Promise<RefreshResponseDTO>=> { //here data is the refreshtoken
 
+        if(!data){
+            throw new AppError("NOT_AUTHENTICATED",401);
+        }
+
+        let decoded: TokenUserPayload;
+        
+        try {
+            decoded=verifyToken<TokenUserPayload>(data,ENV.REFRESH_TOKEN_SECRET)
+        } catch (error:any) {
+            if (error.name === "TokenExpiredError") {
+                throw new AppError("REFRESH_TOKEN_EXPIRED", 401);
+            }
+            throw new AppError("INVALID_REFRESH_TOKEN", 401);
+        }
+
+        if(!decoded.user_Id){
+            throw new AppError("INVALID_REFRESH_TOKEN",401);
+        }
+
+        const storedUserId=await this.tokenStore.getItem<string>(data)
+
+        if(!storedUserId || storedUserId !== decoded.user_Id){
+            throw new AppError("INVALID_REFRESH_TOKEN",401)
+        }
+
+        await this.tokenStore.deleteItem(data);
+
+        const newAccessToken=generateAccessToken({
+            user_Id:decoded.user_Id,
+            email:decoded.email
+        })
+
+        const newRefreshToken=generateRefreshToken({
+            user_Id:decoded.user_Id,
+            email:decoded.email
+        })
+
+
+        await this.tokenStore.setItem<string>(newRefreshToken,decoded.user_Id.toString(),7 * 24 * 60 * 60)
+
+        return {newAccessToken,newRefreshToken}
+
+    }
 
 
 

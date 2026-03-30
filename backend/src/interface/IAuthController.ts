@@ -4,4 +4,5 @@ export interface IAuthController {
   signup: (req: Request, res: Response, next: NextFunction) => Promise<void>;
   signin:(req:Request,res:Response,next:NextFunction)=>Promise<void>;
   getMe:(req:Request,res:Response,next:NextFunction)=>Promise<void>;
+  refresh:(req:Request,res:Response,next:NextFunction)=>Promise<void>;
 }

@@ -11,6 +11,7 @@ import { signin } from '../services/signinUser';
 import { showToast } from '../utils/toast';
 import { useQueryClient } from '@tanstack/react-query';
 import H2Heading from '../componets/Headings/H2Heading';
+import { useNavigate } from 'react-router-dom';
 
 
 type SigninFormType = z.infer<typeof signinSchema>;
@@ -22,6 +23,7 @@ export function SigninPage() {
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [isLoading,setIsLoading]=useState<boolean>(false)
     const queryClient=useQueryClient()
+    const navigate=useNavigate()
 
     const onSubmit=async (data:SigninFormType)=>{
         console.log("form data : ",data)
@@ -31,6 +33,7 @@ export function SigninPage() {
         if(response.success){
             showToast.success(response.message)
             await queryClient.invalidateQueries({ queryKey: ["me"] });
+            navigate("/home")
         }else if(!response.success){
             if(response.message.includes("password")){
                 setError("password",{

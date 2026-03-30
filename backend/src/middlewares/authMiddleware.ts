@@ -18,12 +18,18 @@ export const authMiddleware=(req:Request,res:Response,next:NextFunction)=>{
         if(!decoded?.user_Id){
             throw new AppError("INVALID_TOKEN",401)
         }
+        console.log(decoded)
 
         req.user=decoded  as TokenUserPayload;
 
         next()
 
-    } catch (error) {
-        throw new AppError("INVALID_TOKEN",401)
+    } catch (error:any) {
+        console.log("errrrrr",error.name)
+        if(error.name==="TokenExpiredError"){
+            console.log("hiiii")
+            return next(new AppError("TOKEN_EXPIRED", 401));
+        }
+        return next(new AppError("INVALID_TOKEN", 401));
     }
 }
