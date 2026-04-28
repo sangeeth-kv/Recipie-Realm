@@ -86,6 +86,21 @@ Sign in :
 
     and in the then create access token and refresh token usign DI tokenservice, and return accesstoken refreshtoken using jwt,user(email,fullname,phone,isVerified,isBlocked,createdAt,userId) and store accesstoken and refreshtoken in the cookies. return api response with user.
 
+Refresh logic and token expired logic:
+    when user refresh the page fist useAuth hook will run and hit /auth/me route and in authMiddleware get the accesstoken from cookies
+    and done validation.moves to authController.getMe() and that controller call auth service layer.
+    
+    in that getMe service it return the getMeResponseDTO like fullname,phone,etc..(non-sensitive data)
+
+    if while validating the accessToken if the token is expired, it return token expired error. and it do api call on the /auth/refresh
+
+    so in backend /auth/refresh it hits on the authcontroller.refresh route controller.get refresh token from the cookies and validate
+
+    and call the auth service layer and verify the token if no error it generate new accesstoken and refresh token (refresh token rotation) and return from the service layer and set that token to cookies,with in  the controller.
+
+
+
+
 
 
     

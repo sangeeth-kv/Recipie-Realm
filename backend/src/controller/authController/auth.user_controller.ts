@@ -1,19 +1,18 @@
 import { NextFunction, Request,Response, } from "express"
-import { Signup } from "../types/Signup"
-import { AuthService } from "../services/auth_service"
-import { apiResponse } from "../helpers/apiResponse"
-import logger from "../config/logger"
-import { SignupRequestDTO, SignupResponseDTO } from "../dtos/signup.dto"
-import { IAuthController } from "../interface/IAuthController"
-import { IAuthService } from "../interface/IAuthService"
-import { SigninRequestDTO, SigninResponseDTO } from "../dtos/signin.dto"
-import { ENV } from "../config/env"
-import { TokenUserPayload } from "../types/TokenUserPayload"
-import { AppError } from "../utils/AppError"
-import { GetMeResponseDTO } from "../dtos/getMeResponse.dto"
+import { Signup } from "../../types/Signup"
+import { apiResponse } from "../../helpers/apiResponse"
+import logger from "../../config/logger"
+import { SignupRequestDTO, SignupResponseDTO } from "../../dtos/signup.dto"
+import { IAuthUserController } from "../../interface/user/IAuthUserController"
+import { IAuthUserService } from "../../interface/user/IAuthUserService"
+import { SigninRequestDTO, SigninResponseDTO } from "../../dtos/signin.dto"
+import { ENV } from "../../config/env"
+import { TokenUserPayload } from "../../types/TokenUserPayload"
+import { AppError } from "../../utils/AppError"
+import { GetMeResponseDTO } from "../../dtos/getMeResponse.dto"
 
-export class AuthController implements IAuthController{
-    constructor(private authService:IAuthService){}
+export class AuthUserController implements IAuthUserController{
+    constructor(private authService:IAuthUserService){}
 
     signup=async (req:Request,res:Response,next:NextFunction):Promise<void>=>{
         try {
@@ -45,14 +44,14 @@ export class AuthController implements IAuthController{
             res.cookie("accessToken",result.accessToken,{
                 httpOnly:true,
                 secure:ENV.NODE_ENV==="production",
-                sameSite:"strict",
+                sameSite:"lax",
                 maxAge: 15 * 60 * 1000, // 15 min
             })
 
             res.cookie("refreshToken",result.refreshToken,{
                 httpOnly:true,
                 secure:ENV.NODE_ENV==="production",
-                sameSite:"strict",
+                sameSite:"lax",
                 maxAge:7 * 24 * 60 * 60 * 1000 // 7 days
             })
 
@@ -68,7 +67,7 @@ export class AuthController implements IAuthController{
 
             console.log("Reacges")
 
-            const userId=req.user?.user_Id;
+            const userId=req.user?.userId;
 
             if(!userId){
                 throw new AppError("UNAUTHORIZED",401)
@@ -95,14 +94,14 @@ export class AuthController implements IAuthController{
             res.cookie("accessToken",result.newAccessToken,{
                 httpOnly:true,
                 secure:ENV.NODE_ENV==="production",
-                sameSite:"strict",
+                sameSite:"lax",
                 maxAge: 15 * 60 * 1000,
             })
 
             res.cookie("refreshToken",result.newRefreshToken,{
                 httpOnly:true,
                 secure:ENV.NODE_ENV==="production",
-                sameSite:"strict",
+                sameSite:"lax",
                 maxAge:7 * 24 * 60 * 60 * 1000 // 7 days
             })
 

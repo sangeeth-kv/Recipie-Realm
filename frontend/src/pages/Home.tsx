@@ -1,9 +1,9 @@
 import React from 'react'
 
-function Matches() {
+function Home() {
   return (
     <div>Matches</div>
   )
 }
 
-export default Matches
+export default Home

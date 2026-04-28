@@ -73,7 +73,8 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   async (error) => {
-    console.log("🔥 INTERCEPTOR HIT");
+    if(!window.location.pathname.includes("/auth")){
+      console.log("🔥 INTERCEPTOR HIT");
 
     const originalRequest = error.config as CustomAxiosRequestConfig;
 
@@ -90,7 +91,12 @@ axiosInstance.interceptors.response.use(
     console.log("message in response : ",message)
 
     // 🔥 HANDLE TOKEN EXPIRED
-    if (message === "TOKEN_EXPIRED" && !originalRequest._retry) {
+    // if (message === "TOKEN_EXPIRED" && !originalRequest._retry) {
+  //   const shouldRefresh =
+  // message === "TOKEN_EXPIRED" ||
+  // message === "NOT_AUTHENTICATED";
+
+if (message==="TOKEN_EXPIRED" && !originalRequest._retry){
 
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
@@ -105,15 +111,21 @@ axiosInstance.interceptors.response.use(
 
       try {
         await refreshService()
-
+         
         processQueue(null);
         isRefreshing = false;
 
         return axiosInstance(originalRequest);
+        // return Promise.reject(error);
 
       } catch (err) {
         processQueue(err, null);
         isRefreshing = false;
+
+        if (window.location.pathname !== "/auth/signin") {
+            window.location.href = "/auth/signin";
+        }
+
 
         // ❌ refresh failed → logout
         window.location.href = "/auth/signin";
@@ -122,11 +134,19 @@ axiosInstance.interceptors.response.use(
     }
 
     // ❌ INVALID TOKEN → logout immediately
-    if (message === "INVALID_TOKEN") {
-      window.location.href = "/auth/signin";
-    }
+    if (
+  message === "INVALID_TOKEN" ||
+  message === "INVALID_REFRESH_TOKEN" ||
+  message === "REFRESH_TOKEN_EXPIRED" ||
+  message==="NOT_AUTHENTICATED"
+) {
+  // if (window.location.pathname !== "/auth/signin") {
+    window.location.href = "/auth/signin";
+  // }
+}
 
     return Promise.reject(error);
+    }
   }
 );
 

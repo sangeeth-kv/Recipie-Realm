@@ -1,3 +1,5 @@
+import { UserRole } from "../interface/user/IuserModel";
+
 export interface SigninRequestDTO {
   email: string;
   password: string;
@@ -8,6 +10,7 @@ export interface SigninResponseDTO {
   email: string;
   fullname: string;
   phone: string;
+  role:UserRole;
   isVerified: boolean;
   createdAt: Date;
   isBlocked:boolean;

@@ -8,4 +8,5 @@ export const ENV = {
   REFRESH_TOKEN_SECRET:process.env.REFRESH_TOKEN_SECRET!,
   REFRESH_TOKEN_EXPIRY:process.env.REFRESH_TOKEN_EXPIRY as string,
   FRONTEND_URL:process.env.FRONTEND_URL!,
+  ADMIN_FRONTEND_URL:process.env. ADMIN_FRONTEND_URL!
 };

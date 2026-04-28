@@ -33,6 +33,7 @@ export function SigninPage() {
         if(response.success){
             showToast.success(response.message)
             await queryClient.invalidateQueries({ queryKey: ["me"] });
+            console.log("jee")
             navigate("/home")
         }else if(!response.success){
             if(response.message.includes("password")){

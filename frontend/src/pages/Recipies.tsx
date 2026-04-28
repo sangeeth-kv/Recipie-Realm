@@ -1,21 +1,10 @@
 import React from 'react'
 
-function StreamPage({children}) {
+function Recipies() {
   return (
     <>
       <div className="min-h-screen flex flex-col bg-gray-100">
-      {/* Navbar */}
-      <header className="bg-black text-white">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-          <h1 className="text-xl font-bold">LiveKick ⚽</h1>
-          <nav className="space-x-4">
-            <a href="#" className="hover:text-gray-300">Home</a>
-            <a href="#" className="hover:text-gray-300">Live Matches</a>
-            <a href="#" className="hover:text-gray-300">Profile</a>
-          </nav>
-        </div>
-      </header>
-
+     
       {/* Main Content */}
       <main className="flex-1 max-w-7xl mx-auto w-full p-4">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[80vh]">
@@ -66,19 +55,12 @@ function StreamPage({children}) {
 
         {/* Extra Content */}
         <div className="mt-6">
-          {children ? "hey":"you"}
+          {/* {children ? "hey":"you"} */}
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-black text-white mt-4">
-        <div className="max-w-7xl mx-auto px-4 py-3 text-center text-sm">
-          © 2026 LiveKick. All rights reserved.
-        </div>
-      </footer>
     </div>
     </>
   )
 }
 
-export default StreamPage
+export default Recipies

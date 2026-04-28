@@ -1,10 +1,10 @@
 import mongoose, { Document, Schema,HydratedDocument  } from "mongoose";
-import { IUserModel } from "../interface/IuserModel";
+import { IUserModel } from "../interface/user/IuserModel";
 
 
 export type UserDocument = HydratedDocument<IUserModel>;
 
-const userSchema = new Schema<IUserModel>(
+const userSchema :Schema<IUserModel> = new Schema<IUserModel>(
   {
     email: {
       type: String,
@@ -25,6 +25,11 @@ const userSchema = new Schema<IUserModel>(
       type: String,
       required: true,
       trim: true,
+    },
+    role: {
+      type: String,
+      enum: ["USER", "ADMIN", "SUPER_ADMIN"],
+      default: "USER",
     },
     isVerified: {
       type: Boolean,

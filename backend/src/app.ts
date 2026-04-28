@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import auth_Routes from "./routes/auth_routes";
+import auth_user_Routes from "./routes/userRoutes/auth.user_routes";
 import { globalErrorHandler } from "./middlewares/errorHandlerMiddleware";
 import cookieparser from "cookie-parser";
 import requestLogger from "./logger/requestLogger";
@@ -12,7 +12,7 @@ const app = express();
 
 app.use(cors(
     {
-    origin:ENV.FRONTEND_URL,
+    origin:[ENV.FRONTEND_URL,ENV.ADMIN_FRONTEND_URL],
     credentials:true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"]
     }
@@ -22,7 +22,8 @@ app.use(express.json());
 app.use(cookieparser())
 
 app.use(requestLogger)
-app.use("/auth",auth_Routes)
+app.use("/auth",auth_user_Routes)
+// app.use("/admin/auth",admin_auth_routes)
 
 app.use(globalErrorHandler)
 
