@@ -15,7 +15,11 @@ import { RefreshResponseDTO } from "../../dtos/refreshResponse.dto";
 import { ITokenService } from "../../interface/ITokenService";
 
 export class AuthUserService implements IAuthUserService {
-    constructor(private userAuthRepository: IAuthUserRepository,private tokenStore:ITokenStore,private tokenService:ITokenService){}
+    constructor(
+        private userAuthRepository: IAuthUserRepository,
+        private tokenStore:ITokenStore,
+        private tokenService:ITokenService
+    ){}
 
     //for signup user
 

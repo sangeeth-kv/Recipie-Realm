@@ -73,7 +73,7 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   async (error) => {
-    if(!window.location.pathname.includes("/auth")){
+    // if(!window.location.pathname.includes("/auth")){
       console.log("🔥 INTERCEPTOR HIT");
 
     const originalRequest = error.config as CustomAxiosRequestConfig;
@@ -147,7 +147,7 @@ if (message==="TOKEN_EXPIRED" && !originalRequest._retry){
 
     return Promise.reject(error);
     }
-  }
+  // }
 );
 
 export default axiosInstance;

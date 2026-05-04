@@ -1,38 +1,43 @@
-import { useEffect,  } from 'react'
-import './App.css'
-import { Routes, Route, Navigate, } from "react-router-dom";
-import SignupPage from './pages/Signup';
-import { Toaster } from 'react-hot-toast';
-import SigninPage from './pages/Signin';
-import { useAppSelector } from './types/ThemeHookType';
-import Layout from './layout/UserLayout';
-import { ProtectedRoute } from './componets/ProtectedRoutes/ProtectedRoutes';
-import Recipies from './pages/Recipies';
-import Home from './pages/Home';
-import { PublicRoute } from './pages/PublicRoutes';
+import { useEffect } from "react";
+import "./App.css";
+import { Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import { useAppSelector } from "./types/ThemeHookType";
+import AuthRouter from "./app/router/AuthRouter";
+import OtherRoutes from "./app/router/OtherRouter";
+import AdminRouter from "./app/router/AdminRouter";
+import UserRouter from "./app/router/UserRouter";
 // import { useAuth } from './hooks/useAuth';
 
 function App() {
-
-  const mode = useAppSelector((state)=>state.theme.mode)
+  const mode = useAppSelector((state) => state.theme.mode);
   useEffect(() => {
-  document.documentElement.classList.toggle("dark", mode === "dark");
+    document.documentElement.classList.toggle("dark", mode === "dark");
   }, [mode]);
-   
-  return(
+
+  return (
     <>
-    <Toaster position="top-right"toastOptions={{duration: 3000,style: {background: "#333",color: "#fff",},}}/>
-    <Routes>
-      <Route path="/auth">
-        <Route path="signup" element={<PublicRoute><SignupPage /></PublicRoute>} />
-        <Route path="signin" element={<PublicRoute><SigninPage /></PublicRoute>} />
-      </Route>
-      <Route path="/" element={<Navigate to="/home"/>}/>
-      <Route path='/home'element={<ProtectedRoute><Layout><Home/></Layout></ProtectedRoute>}/>
-      <Route path='/recipies' element={<ProtectedRoute><Layout><Recipies/></Layout></ProtectedRoute>}/>
-    </Routes>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3000,
+          style: { background: "#333", color: "#fff" },
+        }}
+      />
+      <Routes>
+        {/* Landing */}
+        <Route path="/" element={<OtherRoutes />} />
+
+        {/* Feature-based routers */}
+        <Route path="/auth/*" element={<AuthRouter />} />
+        <Route path="/admin/*" element={<AdminRouter />} />
+        <Route path="/*" element={<UserRouter />} />
+
+        {/* 404 */}
+        <Route path="*" element={<h1>Page Not Found</h1>} />
+      </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

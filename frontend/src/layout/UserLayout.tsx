@@ -1,8 +1,9 @@
-import React, { type ReactNode } from "react";
+
 import Headers from "../componets/Headers/Header";
 import Footer from "../componets/Footer/Footer";
+import { Outlet } from "react-router-dom";
 
-export default function Layout({ children }:{children:ReactNode}) {
+export default function Layout() {
 
     
   return (
@@ -12,7 +13,7 @@ export default function Layout({ children }:{children:ReactNode}) {
 
       {/* Main content */}
       <main className="flex-1 pt-16 px-6">
-        {children}
+        <Outlet /> 
       </main>
 
       {/* Footer */}

@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
-import InputField from '../componets/Inputs/InputField'
-import Button from '../componets/Buttons/Button'
+import InputField from '../../componets/Inputs/InputField'
+import Button from '../../componets/Buttons/Button'
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signinSchema } from '../validation/userSigninSchema';
+import { signinSchema } from '../../validation/userSigninSchema';
 import type z from 'zod';
 import { Eye, EyeOff } from 'lucide-react';
-import AuthRedirectText from '../componets/Texts/AuthRedirectText';
-import { signin } from '../services/signinUser';
-import { showToast } from '../utils/toast';
+import AuthRedirectText from '../../componets/Texts/AuthRedirectText';
+import { signin } from '../../services/signinUser';
+import { showToast } from '../../utils/toast';
 import { useQueryClient } from '@tanstack/react-query';
-import H2Heading from '../componets/Headings/H2Heading';
+import H2Heading from '../../componets/Headings/H2Heading';
 import { useNavigate } from 'react-router-dom';
 
 

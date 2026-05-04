@@ -1,16 +1,16 @@
 import  { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import InputField from "../componets/Inputs/InputField";
+import InputField from "../../componets/Inputs/InputField";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signupSchema } from "../validation/userSignupSchema";
+import { signupSchema } from "../../validation/userSignupSchema";
 import { z } from "zod";
-import Button from "../componets/Buttons/Button";
-import { signup } from "../services/signupUser";
-import { showToast } from "../utils/toast";
+import Button from "../../componets/Buttons/Button";
+import { signup } from "../../services/signupUser";
+import { showToast } from "../../utils/toast";
 import { useNavigate } from "react-router-dom";
-import AuthRedirectText from "../componets/Texts/AuthRedirectText";
-import H2Heading from "../componets/Headings/H2Heading";
+import AuthRedirectText from "../../componets/Texts/AuthRedirectText";
+import H2Heading from "../../componets/Headings/H2Heading";
 
 
 type SignupFormType = z.infer<typeof signupSchema>;

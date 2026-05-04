@@ -16,17 +16,22 @@ export default function Headers() {
   }
 
   return (
+    // <header
+    //   className="fixed top-0 left-0 right-0 z-50
+    //          bg-gradient-to-r from-orange-500 to-red-500 dark:bg-gray-800 shadow-sm"
+    // >
     <header
-      className="fixed top-0 left-0 right-0 z-50
-             bg-black dark:bg-gray-800 shadow-sm"
-    >
+  className="fixed top-0 left-0 right-0 z-50
+  bg-gradient-to-r from-orange-500 to-red-500 
+  dark:bg-gradient-to-r dark:from-gray-900 dark:to-gray-800 shadow-sm"
+>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
         
         {/* UPDATED FLEX LAYOUT */}
         <div className="flex items-center justify-between h-16">
 
           {/* LEFT (empty for spacing) */}
-          <div className="flex-1 text-amber-50">LOGO</div>
+          <div className="flex-1 text-amber-50">Recipie Realam</div>
 
           {/* CENTER NAV */}
           <nav className="hidden md:flex items-center space-x-6 justify-center flex-1">
@@ -35,7 +40,7 @@ export default function Headers() {
               className={({ isActive }) =>
                 `px-2 py-1 rounded transition ${
                   isActive
-                    ? "text-amber-300 font-semibold dark:text-indigo-400"
+                    ? "text-amber-200 font-semibold dark:text-indigo-400"
                     : "text-white hover:text-amber-100 dark:text-gray-300 dark:hover:text-indigo-400"
                 }`
               }

@@ -1,0 +1,26 @@
+import { Document, Types } from "mongoose";
+
+export type CategoryType="Veg"|"Non-Veg"|"Dessert";
+export type DifficultyType="Easy"|"Medium"|"Hard";
+
+export interface IRecipe extends Document{
+    _id:Types.ObjectId;
+    title:string;
+    description:string;
+    images:string[];
+    category:CategoryType;
+    tags:string[];
+    ingredients:string[];
+    steps:string[];
+    prepTime:number;
+    difficulty:DifficultyType;
+    userId:Types.ObjectId;
+    likes:number;
+    likedBy:Types.ObjectId[];
+    saves:number;
+    savedBy:Types.ObjectId[];
+    views:number;
+    averageRating:number;
+    createdAt:Date;
+    updatedAt:Date;
+}
