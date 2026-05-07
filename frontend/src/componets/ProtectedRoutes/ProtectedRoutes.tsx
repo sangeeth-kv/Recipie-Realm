@@ -8,6 +8,7 @@ export function ProtectedRoute() {
    if (isLoading || fetchStatus === "fetching") return null;
   // if (isLoading) return <h1>Loading...</h1>;
 
+  console.log("user : ",user)
   if (isError || !user) return <Navigate to="/auth/signin" />;
 
   return <Outlet/>;

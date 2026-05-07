@@ -39,10 +39,10 @@ const userSchema :Schema<IUserModel> = new Schema<IUserModel>(
       enum: ["USER", "ADMIN", "SUPER_ADMIN"],
       default: "USER",
     },
-    // bio: String,
-    // followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    // following: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    // savedRecipes: [{ type: Schema.Types.ObjectId, ref: "Recipe" }],
+    bio: String,
+    followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    following: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    savedRecipes: [{ type: Schema.Types.ObjectId, ref: "Recipe" }],
 
     isVerified: {
       type: Boolean,
@@ -55,12 +55,33 @@ const userSchema :Schema<IUserModel> = new Schema<IUserModel>(
     isDeleted:{
         type:Boolean,
         default:false
-    }
+    },
+    PremiumMember: {
+      startDate: {
+        type: Date,
+      },
+      endDate: {
+        type: Date,
+      },
+},
   },
   {
-    timestamps: true, // adds createdAt & updatedAt
+    timestamps: true,
+    toJSON:{virtuals:true},
+    toObject: { virtuals: true } // adds createdAt & updatedAt
   }
+  
 );
+userSchema.virtual("isPremium").get(function () {
+  if (!this.PremiumMember?.endDate) {
+    return false;
+  }
+
+  return this.PremiumMember.endDate > new Date();
+});
+
+
+
 
 export const UserModel = mongoose.model<IUserModel>("User", userSchema);
 

@@ -1,17 +1,17 @@
 import { AppError } from "../../utils/AppError";
 import logger from "../../config/logger";
 import { comparePassword, hashPassword } from "../../utils/hashPassword";
-import { SignupRequestDTO, SignupResponseDTO } from "../../dtos/signup.dto";
-import { IAuthUserRepository } from "../../interface/user/IAuthUserRepository";
-import { IAuthUserService } from "../../interface/user/IAuthUserService";
-import { SigninRequestDTO, SigninResponseDTO } from "../../dtos/signin.dto";
+import { SignupRequestDTO, SignupResponseDTO } from "../../dtos/authDTOs/signup.dto";
+import { IAuthUserRepository } from "../../interface/user/Auth/IAuthUserRepository";
+import { IAuthUserService } from "../../interface/user/Auth/IAuthUserService";
+import { IInternalSigninResponseDTO, SigninRequestDTO, SigninResponseDTO } from "../../dtos/authDTOs/signin.dto";
 import { TokenUserPayload } from "../../types/TokenUserPayload";
 import { generateAccessToken, generateRefreshToken, verifyToken } from "../../utils/jwt";
 import { ITokenStore } from "../../interface/IRedisHelper";
-import { GetMeResponseDTO } from "../../dtos/getMeResponse.dto";
+import { GetMeResponseDTO } from "../../dtos/authDTOs/getMeResponse.dto";
 import mongoose from "mongoose";
 import { ENV } from "../../config/env";
-import { RefreshResponseDTO } from "../../dtos/refreshResponse.dto";
+import { RefreshResponseDTO } from "../../dtos/authDTOs/refreshResponse.dto";
 import { ITokenService } from "../../interface/ITokenService";
 
 export class AuthUserService implements IAuthUserService {
@@ -59,12 +59,14 @@ export class AuthUserService implements IAuthUserService {
         };
     }
 
-    signin=async (data:SigninRequestDTO):Promise<SigninResponseDTO>=>{
+    signin=async (data:SigninRequestDTO):Promise<IInternalSigninResponseDTO>=>{
         const {email,password}=data
 
         logger.debug("Hitted on authService in signin")
 
         const user=await this.userAuthRepository.findUserByEmail(email)
+
+        console.log("User : ",user)
 
         if(!user){
             throw new AppError(`Dont have an account using this email`,400)
@@ -106,6 +108,14 @@ export class AuthUserService implements IAuthUserService {
             createdAt:user.createdAt,
             isVerified:user.isVerified,
             phone:user.phone,
+            userName:user.userName,
+            isDeleted:user.isDeleted,
+            bio:user.bio,
+            followers:user.followers.map(id => id.toString()),
+            following:user.following.map(id=>id.toString()),
+            savedRecipes: user.savedRecipes.map(id => id.toString()),
+            PremiumMember:user.PremiumMember,
+            isPremium:user.isPremium,
             accessToken,
             refreshToken,
         }
@@ -124,13 +134,22 @@ export class AuthUserService implements IAuthUserService {
             }
 
             return {
-                userId: user._id.toString(),
-                email: user.email,
-                fullname: user.fullname,
-                phone: user.phone,
-                isVerified: user.isVerified,
-                createdAt: user.createdAt,
-                isBlocked: user.isBlocked
+                userId:user._id.toString(),
+                email:user.email,
+                fullname:user.fullname,
+                isBlocked:user.isBlocked,
+                role:user.role,
+                createdAt:user.createdAt,
+                isVerified:user.isVerified,
+                phone:user.phone,
+                userName:user.userName,
+                isDeleted:user.isDeleted,
+                bio:user.bio,
+                followers:user.followers.map(id => id.toString()),
+                following:user.following.map(id=>id.toString()),
+                savedRecipes: user.savedRecipes.map(id => id.toString()),
+                PremiumMember:user.PremiumMember,
+                isPremium:user.isPremium,
             }
     }
 

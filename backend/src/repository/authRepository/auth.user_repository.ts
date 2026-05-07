@@ -1,6 +1,6 @@
 import logger from "../../config/logger";
 import { IUserModel } from "../../interface/user/IuserModel";
-import { IAuthUserRepository } from "../../interface/user/IAuthUserRepository";
+import { IAuthUserRepository } from "../../interface/user/Auth/IAuthUserRepository";
 import { UserDocument, UserModel } from "../../models/user_model";
 import { Signup } from "../../types/Signup";
 import { BaseRepository } from "../baseRepository";

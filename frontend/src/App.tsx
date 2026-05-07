@@ -24,6 +24,8 @@ function App() {
           style: { background: "#333", color: "#fff" },
         }}
       />
+
+      
       <Routes>
         {/* Landing */}
         <Route path="/" element={<OtherRoutes />} />

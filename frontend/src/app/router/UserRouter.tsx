@@ -7,6 +7,7 @@ import { ProtectedRoute } from '../../componets/ProtectedRoutes/ProtectedRoutes'
 import RecipeDetails from '../../pages/userPages/RecipieDetails'
 import Profiles from '../../pages/userPages/Profiles'
 import ProfilePage from '../../pages/userPages/UserDetails'
+import AddRecipePage from '../../pages/userPages/AddRecipePage'
 
 function UserRouter() {
   return (
@@ -18,10 +19,10 @@ function UserRouter() {
         <Route path="profiles" element={<Profiles/>} />
         <Route path="profile/:id" element={<ProfilePage/>} />
         <Route path="/recipe/:id" element={<RecipeDetails />} />
-        <Route path="profile" element={<h1>Profile page</h1>}/>
+        <Route path="add-recipe" element={<AddRecipePage />} />
         <Route path="accounts" element={<h1>Accounts page</h1>}/>
         <Route path="chat" element={<h1>chat page</h1>}/>
-    </Route>
+    </Route>    
   </Route>
 </Routes>
   )

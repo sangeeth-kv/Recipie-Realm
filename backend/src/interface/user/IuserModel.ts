@@ -13,4 +13,14 @@ export interface IUserModel extends Document {
   updatedAt: Date;
   isBlocked:boolean;
   isDeleted:boolean;
+  bio:string;
+  followers:Types.ObjectId[];
+  following:Types.ObjectId[];
+  savedRecipes:Types.ObjectId[];
+  PremiumMember:{
+    startDate:Date;
+    endDate:Date;
+  },
+  isPremium:boolean;
+
 }

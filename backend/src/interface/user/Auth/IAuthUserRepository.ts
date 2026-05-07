@@ -1,6 +1,6 @@
-import { UserDocument } from "../../models/user_model";
-import { Signup } from "../../types/Signup";
-import { IUserModel } from "./IuserModel";
+import { UserDocument } from "../../../models/user_model";
+import { Signup } from "../../../types/Signup";
+import { IUserModel } from "../IuserModel";
 
 export interface IAuthUserRepository {
 

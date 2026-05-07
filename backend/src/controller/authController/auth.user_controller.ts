@@ -2,14 +2,14 @@ import { NextFunction, Request,Response, } from "express"
 import { Signup } from "../../types/Signup"
 import { apiResponse } from "../../helpers/apiResponse"
 import logger from "../../config/logger"
-import { SignupRequestDTO, SignupResponseDTO } from "../../dtos/signup.dto"
-import { IAuthUserController } from "../../interface/user/IAuthUserController"
-import { IAuthUserService } from "../../interface/user/IAuthUserService"
-import { SigninRequestDTO, SigninResponseDTO } from "../../dtos/signin.dto"
+import { SignupRequestDTO, SignupResponseDTO } from "../../dtos/authDTOs/signup.dto"
+import { IAuthUserController } from "../../interface/user/Auth/IAuthUserController"
+import { IAuthUserService } from "../../interface/user/Auth/IAuthUserService"
+import { SigninRequestDTO, SigninResponseDTO } from "../../dtos/authDTOs/signin.dto"
 import { ENV } from "../../config/env"
 import { TokenUserPayload } from "../../types/TokenUserPayload"
 import { AppError } from "../../utils/AppError"
-import { GetMeResponseDTO } from "../../dtos/getMeResponse.dto"
+import { GetMeResponseDTO } from "../../dtos/authDTOs/getMeResponse.dto"
 
 export class AuthUserController implements IAuthUserController{
     constructor(private authService:IAuthUserService){}
@@ -55,7 +55,9 @@ export class AuthUserController implements IAuthUserController{
                 maxAge:7 * 24 * 60 * 60 * 1000 // 7 days
             })
 
-            apiResponse<SigninResponseDTO>(res,200,true,"Login successfully",result)
+            const {accessToken,refreshToken,...userData}=result
+
+            apiResponse<SigninResponseDTO >(res,200,true,"Login successfully",result)
 
         } catch (error) {
             console.log(error)

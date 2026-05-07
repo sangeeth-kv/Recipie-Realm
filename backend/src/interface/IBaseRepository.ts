@@ -4,4 +4,5 @@ export interface IBaseRepository<T>{
     delete(id:string):Promise<boolean>;
     findById(id:string):Promise<T | null>;
     findOne(filter:any):Promise<T | null>;
+    find(filter?:any):Promise<T[]>;
 }
