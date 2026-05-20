@@ -30,6 +30,9 @@ Frontend:
     - @tanstack/react-query
     - react-redux
     - @reduxjs/toolkit
+    - framer-motion
+    - react-easy-crop
+    - zustand
 Backend:
     - cookie-parser
     - winston & winston-daily-rotate-file
@@ -39,6 +42,7 @@ Backend:
     - bcrypt
     - ioredis
     - jsonwebtoken
+    - cloudinary multer-storage-cloudinary
 
 
 #Project summary
@@ -97,6 +101,14 @@ Refresh logic and token expired logic:
     so in backend /auth/refresh it hits on the authcontroller.refresh route controller.get refresh token from the cookies and validate
 
     and call the auth service layer and verify the token if no error it generate new accesstoken and refresh token (refresh token rotation) and return from the service layer and set that token to cookies,with in  the controller.
+
+
+Home Page:
+    In this page user can see the post (Following sheffs recipies,suggested recipies,etc..)
+Recipe page:
+    In this user can search for recipie,filter,sort.
+Profiles Page:
+    user can view, and search for users. and also can follow the profiles.
 
 
 

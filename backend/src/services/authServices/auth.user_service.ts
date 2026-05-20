@@ -88,7 +88,8 @@ export class AuthUserService implements IAuthUserService {
 
         const payload:TokenUserPayload={
             userId:String(user._id),
-            email:user.email
+            email:user.email,
+            role:user.role,
         }
 
         const accessToken=this.tokenService.generateAccessToken(payload)

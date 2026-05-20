@@ -5,7 +5,8 @@ import ToggleButton from '../Buttons/ThemeButton';
 import NotificationIcon from '../Buttons/NotifcationIconButton';
 import { useAppSelector } from '../../types/ThemeHookType';
 import Tooltip from '../ToolTip/TootTip';
-import { User } from "lucide-react";
+import { ChefHat, User } from "lucide-react";
+import Logo from '../Logo/Logo';
 
 export default function Headers() {
   const [open, setOpen] = useState(false);
@@ -31,7 +32,9 @@ export default function Headers() {
         <div className="flex items-center justify-between h-16">
 
           {/* LEFT (empty for spacing) */}
-          <div className="flex-1 text-amber-50">Recipie Realam</div>
+          {/* <div className="flex-1 text-amber-50">Recipie Realam</div> */}
+
+          <Logo/>
 
           {/* CENTER NAV */}
           <nav className="hidden md:flex items-center space-x-6 justify-center flex-1">

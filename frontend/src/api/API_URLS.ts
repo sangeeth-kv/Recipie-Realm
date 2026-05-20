@@ -4,7 +4,8 @@ export const API_URLS:APITypes={
 SIGN_UP:"/auth/signup",
 SIGN_IN:"/auth/signin",
 GET_ME:"/auth/me",
-REFRESH:"/auth/refresh-token"
-
+REFRESH:"/auth/refresh-token",
+PROFILE:"/profiles",
+ADD_RECIPE:"/recipe/add-recipe",
 }
 

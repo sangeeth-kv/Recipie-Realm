@@ -1,4 +1,4 @@
-    import { Model } from "mongoose";
+    import { Document, Model } from "mongoose";
     import { IBaseRepository } from "../interface/IBaseRepository";
 
 

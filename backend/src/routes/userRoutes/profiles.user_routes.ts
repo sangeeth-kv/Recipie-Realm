@@ -4,6 +4,6 @@ import { profileUserController } from "../../container/profile.user.container";
 
 
 const router = Router();
-router.get("/profiles",authMiddleware.authHandle,profileUserController.getProfiles)
+// router.get("/profiles",authMiddleware.authHandle,profileUserController.getProfiles)
 
 export default router;

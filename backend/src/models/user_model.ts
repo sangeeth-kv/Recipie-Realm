@@ -40,6 +40,9 @@ const userSchema :Schema<IUserModel> = new Schema<IUserModel>(
       default: "USER",
     },
     bio: String,
+
+    profilePic:{type:String},
+
     followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
     following: [{ type: Schema.Types.ObjectId, ref: "User" }],
     savedRecipes: [{ type: Schema.Types.ObjectId, ref: "Recipe" }],
@@ -48,6 +51,7 @@ const userSchema :Schema<IUserModel> = new Schema<IUserModel>(
       type: Boolean,
       default: false,
     },
+    
     isBlocked:{
         type:Boolean,
         default:false

@@ -1,6 +1,5 @@
 import { SigninRequestDTO, IInternalSigninResponseDTO } from "../../dtos/authDTOs/signin.dto";
-import { GetProfileByIdRequestDTO, GetProfileResponseDTO } from "../../dtos/profileDTOs/getProfileResponse.dto";
-import { UpdateProfileResponseDTO } from "../../dtos/profileDTOs/updateProfileResponse.dto";
+import { GetProfileByIdRequestDTO, GetProfileResponseDTO, GetProfilesResponseDTO } from "../../dtos/profileDTOs/getProfileResponse.dto";
 import { IUserModel } from "../../interface/user/IuserModel";
 import { IProfileUserRepository } from "../../interface/user/profilesInterface/IProfileUserRepository";
 import { IProfileUserService } from "../../interface/user/profilesInterface/IProfileUserService";
@@ -11,20 +10,30 @@ import { AppError } from "../../utils/AppError";
 export class ProfileUserService implements IProfileUserService{
     constructor(private profileUserRepository:IProfileUserRepository){}
 
-    getProfiles=async (search?:string)=>{
-        const users =await this.profileUserRepository.findProfiles(search)
+    getProfiles=async (currentUserId:string,page:number,limit:number,search?:string):Promise<GetProfilesResponseDTO>=>{
+        const result =await this.profileUserRepository.findProfiles(currentUserId,page,limit,search)
 
-        console.log("users in get Profile : ",users)
+        console.log("users in get Profile : ",result)
 
-        return users.map(user => ({
-         userId:user._id.toString(),
-         fullname:user.fullname,
-         userName:user.userName,
-         bio:user.bio,
-         followersCount:user.followers.length,
-         followingCount:user.following.length,
-         isPremium:user.isPremium
-      }))
+        return{
+         users: result.users.map(user => ({
+        _id: user._id.toString(),
+        fullname: user.fullname,
+        userName: user.userName,
+        bio: user.bio,
+        profilePic: user.profilePic,
+        followersCount:
+          user.followers.length,
+        followingCount:
+          user.following.length,
+        isPremium: user.isPremium,
+
+        })),
+         totalPage: result.totalPages,
+         totalUsers: result.totalUsers,
+
+        }
+
     }
 
     getProfileById=async(data: GetProfileByIdRequestDTO): Promise<GetProfileResponseDTO>=> {

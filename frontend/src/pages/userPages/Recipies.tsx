@@ -13,7 +13,7 @@ import {
   X,
 } from "lucide-react";
 import SearchBar from "../../componets/SearchBar/SearchBar";
-import RecipeCard from "../../componets/Recipies/RecipieCard/RecipieCard";
+
 import type { IRecipe } from "../../interface/IRecipie";
 import RecipeFilter from "../../componets/Recipies/RecipieFilter/RecipeFilter";
 import TrendingRecipe from "../../componets/Recipies/RecipeTrending/TrendingRecipe";
@@ -22,6 +22,7 @@ import FilterToggleButton from "../../componets/Recipies/FilterToggleButton/Filt
 import RecipeGrid from "../../componets/Recipies/RecipeGrid/RecipeGrid";
 import AddRecipeButton from "../../componets/Buttons/AddRecipeButton";
 import { useNavigate } from "react-router-dom";
+import RecipeLoader from "../../componets/FallbackScreen/FallbackScreen";
 
 export default function Recipies() {
 
@@ -294,7 +295,8 @@ export default function Recipies() {
       data.sort((a, b) => b.averageRating - a.averageRating);
     }
 
-    setFilteredRecipes(data);
+        setFilteredRecipes(data);
+
 
     const shuffled = [...recipes].sort(() => 0.5 - Math.random());
     setTrending(shuffled.slice(0, 3));
@@ -331,6 +333,10 @@ export default function Recipies() {
     setSort("");
     setSearch("");
   };
+
+  if(!filteredRecipes){
+    return <RecipeLoader/>
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">

@@ -1,5 +1,7 @@
+import { IUserModel } from "../../interface/user/IuserModel";
+
 export interface GetProfileResponseDTO {
-  userId:string;
+  _id:string;
   fullname:string;
   userName:string;
   bio:string;
@@ -11,6 +13,26 @@ export interface GetProfileResponseDTO {
   isPremium:boolean;
 }
 
+export interface GetProfilesResponseDTO{
+  users: GetProfileResponseDTO[];
+  totalPage: number;
+  totalUsers: number;
+}
+
 export interface GetProfileByIdRequestDTO {
    userId: string;
+}
+
+export interface PaginatedProfilesResponse {
+  users: IUserModel[];
+  totalUsers: number;
+  totalPages: number;
+}
+
+
+
+export interface PaginatedProfilesRepositoryResponse {
+  users: IUserModel[];
+  totalUsers: number;
+  totalPages: number;
 }

@@ -9,6 +9,9 @@ declare namespace NodeJS {
     REFRESH_TOKEN_EXPIRY:string;
     FRONTEND_URL:string;
     NODE_ENV:string;
-     ADMIN_FRONTEND_URL:string;
+    ADMIN_FRONTEND_URL:string;
+    CLOUDINARY_API_SECRET:string;
+    CLOUDINARY_API_KEY:string;
+    CLOUDINARY_NAME:string;
   }
 }
