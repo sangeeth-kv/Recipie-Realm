@@ -106,10 +106,16 @@ const recipeSchema:Schema<IRecipe> = new Schema<IRecipe>(
       type: Number,
       default: 0,
     },
+    aiApproveStatus:{
+      type: String,
+      enum: ["PENDING", "REJECTED", "SUCCESS"],
+      required: true,
+      default:"PENDING"
+    }
   },
   {
     timestamps: true,
   }
 );
 
-export const UserModel = mongoose.model<IRecipe>("Recipe", recipeSchema);
+export const RecipieModel = mongoose.model<IRecipe>("Recipe", recipeSchema);

@@ -8,10 +8,13 @@ export const globalErrorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  console.error("ERROR:", err);
+  console.error("ERROR: IN ERROR HANDLER : ", err);
+
+  
 
   // ✅ Known (operational) error
   if (err instanceof AppError && err.isOperational) {
+    
     return apiResponse(res, err.statusCode, false, err.message);
   }
 

@@ -3,6 +3,7 @@ import { IIngredient } from "../../dtos/recipeDTOs/addRecipeDTO";
 
 export type CategoryType="Veg"|"Non-Veg"|"Dessert";
 export type DifficultyType="Easy"|"Medium"|"Hard";
+export type AiApproveStatus="PENDING"|"REJECTED"|"SUCCESS"
 
 
 export interface IRecipe extends Document{
@@ -25,4 +26,5 @@ export interface IRecipe extends Document{
     averageRating:number;
     createdAt:Date;
     updatedAt:Date;
+    aiApproveStatus:AiApproveStatus;
 }

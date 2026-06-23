@@ -1,4 +1,4 @@
-import { IRecipe } from "../../interface/recipies/IRecipies";
+import { AiApproveStatus, IRecipe } from "../../interface/recipies/IRecipies";
 
 export type CategoryType="Veg"|"Non-Veg"|"Dessert";
 export type DifficultyType="Easy"|"Medium"|"Hard";
@@ -18,6 +18,8 @@ export interface AddRecipeDTO{
     ingredients:IIngredient[];
     steps:string[];
     images?:string[];
+    aiApproveStatus:AiApproveStatus;
+    userId:string;
 }
 
 

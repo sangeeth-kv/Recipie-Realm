@@ -3,10 +3,11 @@ import { AddRecipeDTO } from "../../dtos/recipeDTOs/addRecipeDTO";
 import { IAiRecipeEnhancementService } from "../../interface/ai/IAiRecipeEnhancementService";
 import { IAiRecipeValidationService } from "../../interface/ai/IAiRecipeValidationService";
 import { INutritionQueueService } from "../../interface/queue/INutritionQueueService";
+import { AiApproveStatus } from "../../interface/recipies/IRecipies";
 import IRecpieRepository from "../../interface/recipies/recipies/IRecipeRepository";
 import { IRecipeService } from "../../interface/recipies/recipies/IRecipeService";
 import { AppError } from "../../utils/AppError";
-import AiRecipeValidationService from "../ai/AiRecipeValidationService";
+import AiRecipeValidationService, { RecipeValidationResult } from "../ai/AiRecipeValidationService";
 
 
 
@@ -22,24 +23,25 @@ export default class  RecipeService implements IRecipeService{
     addRecipe=async(data: AddRecipeDTO)=> {
         console.log("data in the add recipe service : ",data);
 
-        let validation;
+        const validation =await this.aiRecipeValidationService.validateRecipe(data);
 
-        validation=await this.aiRecipeValidationService.validateRecipe(data);
+        let aiApproveStatus:AiApproveStatus;
 
-        if(!validation.isValid && validation.confidence>80){
-            throw new AppError(validation.reason,400);
+        if(validation.aiFailed){
+            aiApproveStatus="PENDING";
+        }else if(validation.isValid && validation?.confidence >= 80){
+            aiApproveStatus="SUCCESS";
+        }else{
+            aiApproveStatus = "REJECTED";
         }
 
         //calling the repo for create the recipie
-        const recipe =await this.recipeRepository.createRecipie(data);
+        const recipe =await this.recipeRepository.createRecipie({...data,aiApproveStatus});
         logger.debug("After createRecipe");
 
-        //add to the queue by passing the recipe id , the worker will do the AI nutrition extraction and save to DB
-        await this.aiNutritionQueueService.addJob(
-            recipe._id.toString()
-        );
-
-         logger.debug("After added ot jOB");
+        if (aiApproveStatus === "SUCCESS") {
+            await this.aiNutritionQueueService.addJob(recipe._id.toString());
+        }
 
         return recipe;
     }

@@ -29,6 +29,7 @@ export default class RecipeController implements IRecipeController{
             const recipeData: AddRecipeDTO = {
                 ...req.body,
                 images: imageUrls,
+                userId:req.user?.userId
             };
 
             //calling the recipe service to add the recipe to database
@@ -38,7 +39,7 @@ export default class RecipeController implements IRecipeController{
 
             apiResponse<AddRecipeResponseDTO>(res,201,true,"Recipe uploaded!",recipe)  
         } catch (error) {
-            console.log(error)
+            console.log("Error in Add Recipe Controller : ",error)
             next(error)
         }
 
