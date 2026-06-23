@@ -13,5 +13,6 @@ declare namespace NodeJS {
     CLOUDINARY_API_SECRET:string;
     CLOUDINARY_API_KEY:string;
     CLOUDINARY_NAME:string;
+    GEMINI_API_KEY:string;
   }
 }

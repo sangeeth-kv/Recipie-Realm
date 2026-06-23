@@ -11,9 +11,15 @@ import addRecipe from "../../services/addRecipe";
 import { recipeSchema, formatZodErrors } from "../../validation/recipeSchema";
 import { useUploadStore } from "../../app/uploadStore";
 import { useNavigate } from "react-router-dom";
+import { enhanceDescription } from "../../services/enhanceDescription";
 // import { ZodError } from "zod";
 
 // ─── Form data type ───────────────────────────────────────────────────────────
+interface IIngredient {
+  name: string;
+  quantity: number;
+  unit: string;
+}
 
 export interface RecipeFormData {
   title: string;
@@ -21,11 +27,14 @@ export interface RecipeFormData {
   images: ImageEntry[];
   category: string;
   tags: string[];
-  ingredients: string[];
+  ingredients: IIngredient[];
   steps: string[];
   prepTime: number;
   difficulty: string;
 }
+
+
+
 
 // Field error map — one message per top-level field
 type FieldErrors = Partial<Record<keyof RecipeFormData | "_form", string>>;
@@ -51,7 +60,7 @@ export default function AddRecipePage() {
     images: [],
     category: "Veg",
     tags: [],
-    ingredients: [""],
+    ingredients: [ {name: "",quantity: 0,unit: "g",}],
     steps: [""],
     prepTime: 0,
     difficulty: "Easy",
@@ -61,6 +70,9 @@ export default function AddRecipePage() {
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [enhancedDescription, setEnhancedDescription] =useState("");
+  const [isEnhancing, setIsEnhancing] =useState(false);
+  const [showEnhanced, setShowEnhanced] =useState(false); 
   const {startUpload,setProgress,finishUpload,failUpload}=useUploadStore();
   const navigate = useNavigate();
 
@@ -75,6 +87,49 @@ export default function AddRecipePage() {
       setFieldErrors((prev) => ({ ...prev, [field]: undefined }));
     }
   };
+
+  // -handle AI--------------------
+  const handleEnhance = async (isRegenerate: boolean = false) => {
+  if (!formData.description.trim()) return;
+
+  console.log(isRegenerate);
+  console.log(typeof isRegenerate);
+
+  try {
+    setIsEnhancing(true);
+
+    const response =
+      await enhanceDescription(
+        formData.description,
+        isRegenerate
+      );
+
+    setEnhancedDescription(
+      response.desc
+    );
+
+    setShowEnhanced(true);
+  } finally {
+    setIsEnhancing(false);
+  }
+};
+
+const handleAccept = () => {
+  updateField(
+    "description",
+    enhancedDescription
+  );
+
+  setShowEnhanced(false);
+};
+
+const handleReject = () => {
+  setShowEnhanced(false);
+};
+
+const handleRegenerate = async () => {
+  await handleEnhance(true);
+};
 
   // ── Submit ──────────────────────────────────────────────────────────────────
   const handleSubmit = async (e: React.FormEvent) => {
@@ -111,7 +166,8 @@ export default function AddRecipePage() {
       fd.append("difficulty", result.data.difficulty);
 
       result.data.tags.forEach((tag, i) => fd.append(`tags[${i}]`, tag));
-      result.data.ingredients.forEach((ing, i) => fd.append(`ingredients[${i}]`, ing));
+      // result.data.ingredients.forEach((ing, i) => fd.append(`ingredients[${i}]`, ing));
+      fd.append("ingredients", JSON.stringify(result.data.ingredients));
       result.data.steps.forEach((step, i) => fd.append(`steps[${i}]`, step));
 
       // Use the validated ImageEntry array (from result.data)
@@ -185,7 +241,18 @@ export default function AddRecipePage() {
 
           {/* Basic Info */}
           <section id="field-title">
-            <RecipeBasicInfo formData={formData} updateField={updateField} />
+            <RecipeBasicInfo
+              formData={formData}
+              updateField={updateField}
+              enhancedDescription={enhancedDescription}
+              isEnhancing={isEnhancing}
+              showEnhanced={showEnhanced}
+              onEnhance={handleEnhance}
+              onAccept={handleAccept}
+              onReject={handleReject}
+              onRegenerate={handleRegenerate}
+             />
+             
             <FieldError message={fieldErrors.title} />
             <FieldError message={fieldErrors.description} />
             <FieldError message={fieldErrors.category} />

@@ -16,15 +16,14 @@ export class AuthUserController implements IAuthUserController{
 
     signup=async (req:Request,res:Response,next:NextFunction):Promise<void>=>{
         try {
+            
             logger.debug("Hitted AuthController in Signup fn")
 
-            const signupData:SignupRequestDTO=req.body
+            const signupData:SignupRequestDTO=req.body //extracting data from body
 
-            const result=await this.authService.signup(signupData)
+            const result=await this.authService.signup(signupData) //calling the authservice's signup method
 
-            console.log("Result : ",result)
-
-            apiResponse<SignupResponseDTO>(res,201,true,"Account created successfully",result)
+            apiResponse<SignupResponseDTO>(res,201,true,"Account created successfully",result) //here signupdto passed as generic 
         } catch (error) {
             console.log(error)
             next(error)
@@ -33,48 +32,52 @@ export class AuthUserController implements IAuthUserController{
 
     signin=async(req: Request, res: Response, next: NextFunction):Promise<void>=>{
         try {
-            const data:SigninRequestDTO=req.body
+            const data:SigninRequestDTO=req.body //geting sign in data from body
 
             logger.debug("Hitted on authController")
 
-            const result=await this.authService.signin(data)
+            const result=await this.authService.signin(data) //calling authservice's signin fn
 
             console.log("result : ",result)
 
-            res.cookie("accessToken",result.accessToken,{
+            res.cookie("accessToken",result.accessToken,{ //stored access token with expiry of 15 min
                 httpOnly:true,
                 secure:ENV.NODE_ENV==="production",
                 sameSite:"lax",
-                maxAge: 15 * 60 * 1000, // 15 min
+                maxAge: 15 * 60 * 1000, // 15 min  
             })
 
-            res.cookie("refreshToken",result.refreshToken,{
+            res.cookie("refreshToken",result.refreshToken,{ //stored access token with expiry of 15 min
                 httpOnly:true,
                 secure:ENV.NODE_ENV==="production",
                 sameSite:"lax",
                 maxAge:7 * 24 * 60 * 60 * 1000 // 7 days
             })
 
-            const {accessToken,refreshToken,...userData}=result
+            const {accessToken,refreshToken,...userData}=result //need only user data so extract only the needed data
+            //(no access and refresh to return to frontend)
 
-            apiResponse<SigninResponseDTO >(res,200,true,"Login successfully",result)
+            apiResponse<SigninResponseDTO >(res,200,true,"Login successfully",userData)
 
         } catch (error) {
             console.log(error)
             next(error)
         }
     }
+
+    //for when the user logged in and refresh the page, to get the details of the user.
     getMe=async(req: Request, res: Response, next: NextFunction):Promise<void>=>{
         try {
 
             console.log("Reacges")
 
-            const userId=req.user?.userId;
+            const userId=req.user?.userId; //get userId from the req.user that  is provided by the middleware
 
             if(!userId){
-                throw new AppError("UNAUTHORIZED",401)
+                throw new AppError("UNAUTHORIZED",401);
             }
 
+            
             const user=await this.authService.getMe(userId)
 
             apiResponse<GetMeResponseDTO>(res,200,true,"USER_FETCHED",user)
@@ -83,6 +86,8 @@ export class AuthUserController implements IAuthUserController{
             next(error)
         }
     }
+
+    //for the refresh token, when the access token expired frontend call /refresh and hit on this method.
     refresh= async(req: Request, res: Response, next: NextFunction):Promise<void> => {
         try {
             const refreshToken=req.cookies.refreshToken
@@ -93,14 +98,16 @@ export class AuthUserController implements IAuthUserController{
 
             const result=await this.authService.refresh(refreshToken)
 
-            res.cookie("accessToken",result.newAccessToken,{
+            //token rotation
+
+            res.cookie("accessToken",result.newAccessToken,{ //setting new access token 
                 httpOnly:true,
                 secure:ENV.NODE_ENV==="production",
                 sameSite:"lax",
                 maxAge: 15 * 60 * 1000,
             })
 
-            res.cookie("refreshToken",result.newRefreshToken,{
+            res.cookie("refreshToken",result.newRefreshToken,{ //setting new refresh token 
                 httpOnly:true,
                 secure:ENV.NODE_ENV==="production",
                 sameSite:"lax",

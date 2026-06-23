@@ -1,7 +1,9 @@
 import { Document, Types } from "mongoose";
+import { IIngredient } from "../../dtos/recipeDTOs/addRecipeDTO";
 
 export type CategoryType="Veg"|"Non-Veg"|"Dessert";
 export type DifficultyType="Easy"|"Medium"|"Hard";
+
 
 export interface IRecipe extends Document{
     _id:Types.ObjectId;
@@ -10,7 +12,7 @@ export interface IRecipe extends Document{
     images:string[];
     category:CategoryType;
     tags:string[];
-    ingredients:string[];
+    ingredients:IIngredient[];
     steps:string[];
     prepTime:number;
     difficulty:DifficultyType;

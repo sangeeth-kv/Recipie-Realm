@@ -2,19 +2,38 @@
 
 import { Clock } from "lucide-react";
 import type { RecipeFormData } from "../../../pages/userPages/AddRecipePage";
+import RecipeDescriptionAI from "../../AiComponents/RecipeDescriptionAI";
 
 
 interface Props {
   formData: RecipeFormData;
+
   updateField: <K extends keyof RecipeFormData>(
     field: K,
     value: RecipeFormData[K]
   ) => void;
+
+  enhancedDescription: string;
+  isEnhancing: boolean;
+  showEnhanced: boolean;
+
+  onEnhance: () => void;
+  onAccept: () => void;
+  onReject: () => void;
+  onRegenerate: () => void;
 }
 
 export default function RecipeBasicInfo({
   formData,
   updateField,
+  enhancedDescription,
+  isEnhancing,
+  onAccept,
+  onEnhance,
+  onRegenerate,
+  onReject,
+  showEnhanced
+
 }: Props) {
   return (
     <div className="space-y-5">
@@ -35,6 +54,18 @@ export default function RecipeBasicInfo({
         onChange={(e) => updateField("description", e.target.value)}
         className="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-orange-400"
       />
+
+      <RecipeDescriptionAI
+  original={formData.description}
+  enhanced={enhancedDescription}
+  loading={isEnhancing}
+  showEnhanced={showEnhanced}
+  onEnhance={onEnhance}
+  onAccept={onAccept}
+  onReject={onReject}
+  onRegenerate={onRegenerate}
+/>
+
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <select

@@ -15,6 +15,22 @@ const ImageEntrySchema = z.object({
   croppedAreaPixels: z.any().nullable(),
 });
  
+
+const IngredientSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, "Ingredient name is required"),
+
+  quantity: z
+    .number()
+    .positive("Quantity must be greater than 0"),
+
+  unit: z
+    .string()
+    .trim()
+    .min(1, "Unit is required"),
+});
 // ─── Main recipe schema ───────────────────────────────────────────────────────
  
 export const recipeSchema = z.object({
@@ -43,14 +59,9 @@ export const recipeSchema = z.object({
     .max(10, "Maximum 10 tags allowed"),
  
   ingredients: z
-    .array(z.string().min(1, "Ingredient cannot be empty"))
-    .min(1, "Add at least one ingredient")
-    .max(50, "Maximum 50 ingredients allowed")
-    // Filter out any blank entries before validating
-    .transform((items) => items.filter((i) => i.trim() !== ""))
-    .pipe(
-      z.array(z.string().min(1)).min(1, "Add at least one ingredient")
-    ),
+  .array(IngredientSchema)
+  .min(1, "Add at least one ingredient")
+  .max(50, "Maximum 50 ingredients allowed"),
  
   steps: z
     .array(z.string().min(1, "Step cannot be empty"))

@@ -15,33 +15,30 @@ import { RefreshResponseDTO } from "../../dtos/authDTOs/refreshResponse.dto";
 import { ITokenService } from "../../interface/ITokenService";
 
 export class AuthUserService implements IAuthUserService {
+    //dependcy injection 
     constructor(
-        private userAuthRepository: IAuthUserRepository,
-        private tokenStore:ITokenStore,
-        private tokenService:ITokenService
+        private userAuthRepository: IAuthUserRepository, //for user repository
+        private tokenStore:ITokenStore, //for managing token (store,delete,get)
+        private tokenService:ITokenService //for the token service (token generate etc..)
     ){}
 
     //for signup user
 
     signup=async (data:SignupRequestDTO): Promise<SignupResponseDTO>=>{ //used signup data transfer object 
 
-        const {email,fullname,password,phone}=data
+        const {email,fullname,password,phone}:SignupRequestDTO=data //extract data from body 
 
         logger.debug("Hitted on AuthService in Signup")
 
-        const user=await this.userAuthRepository.findUserByEmail(email);
+        const user=await this.userAuthRepository.findUserByEmail(email); //calling the repo to check already registered
 
         if(user){
             throw new AppError("User already exists", 400);
         }
 
-        logger.debug("After user already exists check in Signup Authservice")
-
         const hashedPassword= await hashPassword(password)
 
-        logger.debug(`Hashed password is ${hashedPassword}`)
-
-        const newUser=await this.userAuthRepository.createUser({
+        const newUser=await this.userAuthRepository.createUser({ //creating new acc
             email,
             fullname,
             password:hashedPassword,
@@ -64,41 +61,39 @@ export class AuthUserService implements IAuthUserService {
 
         logger.debug("Hitted on authService in signin")
 
-        const user=await this.userAuthRepository.findUserByEmail(email)
-
-        console.log("User : ",user)
+        const user=await this.userAuthRepository.findUserByEmail(email) //check the user have an account
 
         if(!user){
             throw new AppError(`Dont have an account using this email`,400)
         }
 
+        //not allow user if they have already blocked
         if(user.isBlocked){
             throw new AppError("User is currently blocked",403)
         }
-
+        //not allow user if they have already deleted account
         if(user.isDeleted){
             throw new AppError("User account is deleted",404)
         }
-
+        //comparing password
         const isPassword=await comparePassword(password,user.password)
 
         if(!isPassword){
             throw new AppError("Invalid password entered",400)
         }
 
+        //setting token payload
         const payload:TokenUserPayload={
             userId:String(user._id),
             email:user.email,
             role:user.role,
         }
-
+        //generating access and refresh token
         const accessToken=this.tokenService.generateAccessToken(payload)
         const refreshToken=this.tokenService.generateRefreshToken(payload)
 
+        //saving refresh token in the redis (token store)
         await this.tokenStore.setItem<string>(refreshToken,user._id.toString(), 7 * 24 * 60 * 60)
-
-        console.log("Redis stored token: 11 ", await this.tokenStore.getItem(refreshToken));
-
 
         return {
             userId:user._id.toString(),
@@ -122,12 +117,16 @@ export class AuthUserService implements IAuthUserService {
         }
 
     }
+
+    //for handle the whenthe user refresh the page
     getMe=async(data: string):Promise<GetMeResponseDTO> =>{
 
+            //checking is that a valid object id
             if(!mongoose.Types.ObjectId.isValid(data)){
                 throw new AppError("INVALID_USER",401)
             }
 
+            //find the userby the userID
             const user=await this.userAuthRepository.findUserById(data)
 
             if(!user){
@@ -153,7 +152,7 @@ export class AuthUserService implements IAuthUserService {
                 isPremium:user.isPremium,
             }
     }
-
+    //when the access expired , for getting new access token we need to refersh token to validate
     refresh=async(data: string):Promise<RefreshResponseDTO>=> { //here data is the refreshtoken
 
         if(!data){
@@ -181,11 +180,7 @@ export class AuthUserService implements IAuthUserService {
             throw new AppError("INVALID_REFRESH_TOKEN",401)
         }
 
-        console.log("Redis stored token: 11 ", await this.tokenStore.getItem(data));
-
         await this.tokenStore.deleteItem(data);
-
-        console.log("Redis stored token:12 ", await this.tokenStore.getItem(data));
 
         const newAccessToken=this.tokenService.generateAccessToken({
             userId:decoded.userId,

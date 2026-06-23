@@ -10,7 +10,7 @@ import { UpdateProfileDTO,  } from "../../../dtos/profileDTOs/updateProfileRespo
 
 export interface IProfileUserService {
   getProfiles(currentUserId:string,page:number,limit:number,search?:string): Promise<GetProfilesResponseDTO>;
-  getProfileById(userId: string):Promise<GetProfileResponseDTO>;
+  getProfileById(userId: GetProfileByIdRequestDTO):Promise<GetProfileResponseDTO>;
   updateProfile(userId:string,data: UpdateProfileDTO):Promise<GetProfileResponseDTO>;
 //   refresh(data:string):Promise<RefreshResponseDTO>;
   

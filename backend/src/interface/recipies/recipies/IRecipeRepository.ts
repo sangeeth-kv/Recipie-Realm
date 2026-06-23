@@ -1,5 +1,8 @@
+import { AddRecipeDTO } from "../../../dtos/recipeDTOs/addRecipeDTO";
+import { IRecipe } from "../IRecipies";
 
 
-interface IRecpieRepository{
-    
+export default interface IRecpieRepository{
+    createRecipie(data:AddRecipeDTO):Promise<IRecipe>;
+    findById(recipeId:string):Promise<IRecipe |null>;
 }

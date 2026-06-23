@@ -1,6 +1,6 @@
-import { Types } from "mongoose";
+import { Document, Types } from "mongoose";
 
-export interface INutrition {
+export interface INutrition extends Document {
     _id:Types.ObjectId;
     recipeId:Types.ObjectId;
     calories:number;

@@ -43,6 +43,11 @@ Backend:
     - ioredis
     - jsonwebtoken
     - cloudinary multer-storage-cloudinary
+    - bullmq
+    - redis
+    - @google/genai 
+    - crypto
+     
 
 
 #Project summary
@@ -107,6 +112,10 @@ Home Page:
     In this page user can see the post (Following sheffs recipies,suggested recipies,etc..)
 Recipe page:
     In this user can search for recipie,filter,sort.
+Add Recipe:
+    User can add recipies by entering recipe data and images. After that recipe created in backend and set the queue for worker and return response, Worker will do the 
+    Nutrition extract from the incredients and calculate the calorie values etc.. 
+    Added recipe validation usind Gemini AI , It process the recipie details and return the valid or not
 Profiles Page:
     user can view, and search for users. and also can follow the profiles.
 
