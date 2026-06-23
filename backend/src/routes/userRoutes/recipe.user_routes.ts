@@ -10,7 +10,7 @@ const imageUploader=new ImageUploader()
 
 
 const router = Router();
-router.post("/add-recipe",authMiddleware.authHandle,imageUploader.multiple("images"),recipeController.addRecipe)
+router.post("/add-recipe",authMiddleware.authHandle,imageUploader.multiple("images"),validate(createRecipeSchema),recipeController.addRecipe)
 router.get("/recipies",authMiddleware.authHandle,recipeController.getRecipies)
 router.get("/recipe-details/:id",authMiddleware.authHandle,recipeController.recipeDetails)
 router.put("/edit-recipe/:id",authMiddleware.authHandle,recipeController.editRecipe)

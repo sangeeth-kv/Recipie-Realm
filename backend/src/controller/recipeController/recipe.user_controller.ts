@@ -26,10 +26,9 @@ export default class RecipeController implements IRecipeController{
 
             logger.debug("After setting image url");
 
-            const recipeData: AddRecipeDTO = {//setting the recipe data to save to databse
+            const recipeData: AddRecipeDTO = {
                 ...req.body,
-                ingredients: JSON.parse(req.body.ingredients),//for paring the ingredients because frontend give like string 
-                images:imageUrls,
+                images: imageUrls,
             };
 
             //calling the recipe service to add the recipe to database

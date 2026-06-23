@@ -1,5 +1,18 @@
 import { z } from "zod";
 
+
+const parseJson = (value: unknown) => {
+  if (typeof value === "string") {
+    try {
+      return JSON.parse(value);
+    } catch {
+      return value;
+    }
+  }
+
+  return value;
+};
+
 const ingredientSchema = z.object({
   name: z
     .string()
@@ -45,27 +58,26 @@ export const createRecipeSchema = z.object({
     "Dessert",
   ]),
 
-  tags: z
-    .array(
-      z.string().trim().min(1)
-    )
-    .min(1, "At least one tag is required")
-    .max(10, "Maximum 10 tags allowed"),
+  tags: z.preprocess(
+  parseJson,
+  z.array(
+    z.string().trim().min(1)
+  )
+),
 
-  ingredients: z
-    .array(ingredientSchema)
-    .min(1, "At least one ingredient is required")
-    .max(50, "Maximum 50 ingredients allowed"),
+ingredients: z.preprocess(
+  parseJson,
+  z.array(ingredientSchema)
+),
 
-  steps: z
-    .array(
-      z.string()
-        .trim()
-        .min(1, "Step cannot be empty")
-        .max(500)
-    )
-    .min(1, "At least one step is required")
-    .max(30, "Maximum 30 steps allowed"),
+steps: z.preprocess(
+  parseJson,
+  z.array(
+    z.string()
+      .trim()
+      .min(1)
+  )
+),
 
   prepTime: z.coerce
     .number()

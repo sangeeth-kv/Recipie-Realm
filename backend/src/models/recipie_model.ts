@@ -1,80 +1,115 @@
-import { z } from "zod";
+import mongoose, { Schema, model } from "mongoose";
+import { IRecipe } from "../interface/recipies/IRecipies";
 
-const ingredientSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(1, "Ingredient name is required")
-    .max(100, "Ingredient name is too long"),
+const ingredientSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    quantity: {
+      type: Number,
+      required: true,
+    },
+    unit: {
+      type: String,
+      required: true,
+    },
+  },
+  { _id: false }
+);
 
-  quantity: z
-    .coerce
-    .number()
-    .positive("Quantity must be greater than 0"),
+const recipeSchema:Schema<IRecipe> = new Schema<IRecipe>(
+  {
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
 
-  unit: z
-    .string()
-    .trim()
-    .min(1, "Unit is required")
-    .max(50, "Unit is too long"),
-});
+    description: {
+      type: String,
+      required: true,
+      trim: true,
+    },
 
-export const createRecipeSchema = z.object({
-  title: z
-    .string()
-    .trim()
-    .min(3, "Title must contain at least 3 characters")
-    .max(100, "Title cannot exceed 100 characters"),
+    images: {
+      type: [String],
+      default: [],
+    },
 
-  description: z
-    .string()
-    .trim()
-    .min(10, "Description must contain at least 10 characters")
-    .max(1000, "Description cannot exceed 1000 characters"),
+    category: {
+      type: String,
+      enum: ["Veg", "Non-Veg", "Dessert"],
+      required: true,
+    },
 
-  images: z
-    .array(
-      z.string().url("Invalid image URL")
-    )
-    .max(10, "Maximum 10 images allowed")
-    .optional(),
+    tags: {
+      type: [String],
+      default: [],
+    },
 
-  category: z.enum([
-    "Veg",
-    "Non-Veg",
-    "Dessert",
-  ]),
+    ingredients: {
+      type: [ingredientSchema],
+      required: true,
+    },
 
-  tags: z
-    .array(
-      z.string().trim().min(1)
-    )
-    .min(1, "At least one tag is required")
-    .max(10, "Maximum 10 tags allowed"),
+    steps: {
+      type: [String],
+      required: true,
+    },
 
-  ingredients: z
-    .array(ingredientSchema)
-    .min(1, "At least one ingredient is required")
-    .max(50, "Maximum 50 ingredients allowed"),
+    prepTime: {
+      type: Number,
+      required: true,
+    },
 
-  steps: z
-    .array(
-      z.string()
-        .trim()
-        .min(1, "Step cannot be empty")
-        .max(500)
-    )
-    .min(1, "At least one step is required")
-    .max(30, "Maximum 30 steps allowed"),
+    difficulty: {
+      type: String,
+      enum: ["Easy", "Medium", "Hard"],
+      required: true,
+    },
 
-  prepTime: z.coerce
-    .number()
-    .min(1, "Preparation time must be at least 1 minute")
-    .max(1440, "Preparation time cannot exceed 24 hours"),
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
 
-  difficulty: z.enum([
-    "Easy",
-    "Medium",
-    "Hard",
-  ]),
-});
+    likes: {
+      type: Number,
+      default: 0,
+    },
+
+    likedBy: [{
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    }],
+
+    saves: {
+      type: Number,
+      default: 0,
+    },
+
+    savedBy: [{
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    }],
+
+    views: {
+      type: Number,
+      default: 0,
+    },
+
+    averageRating: {
+      type: Number,
+      default: 0,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+export const UserModel = mongoose.model<IRecipe>("Recipe", recipeSchema);
