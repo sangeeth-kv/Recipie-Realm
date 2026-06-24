@@ -1,5 +1,6 @@
 import RecipeCard from "../RecipieCard/RecipieCard";
 import type { IRecipe } from "../../../interface/IRecipie";
+import Pagination from "../../Pagination/Pagination";
 
 interface IRecipeGridProps {
   recipes: IRecipe[];
@@ -24,6 +25,8 @@ export default function RecipeGrid({
           getDifficultyColor={getDifficultyColor}
         />
       ))}
+
+      <Pagination />
     </div>
   );
 }

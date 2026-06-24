@@ -49,11 +49,13 @@ export default function RecipeCard({ recipe,getCategoryIcon,getDifficultyColor }
 
                       {/* User Info */}
                       <div className="flex items-center gap-3 mb-4 pb-4 border-b border-slate-200">
-                        <img
-                          src={recipe.userId?.profilePic}
+                        {recipe.userId.profilePic?<img
+                          src={recipe.userId?.profilePic }
                           alt={recipe.userId?.fullname}
                           className="w-8 h-8 rounded-full object-cover"
-                        />
+                        /> : <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold">
+                              {recipe.userId.fullname?.charAt(0).toUpperCase()}
+                          </div> }
                         <span className="text-sm font-medium text-slate-900">
                           {recipe.userId?.fullname}
                         </span>

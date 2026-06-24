@@ -48,6 +48,10 @@ export default class  RecipeService implements IRecipeService{
 
     getAllRecipies=async(currentUserId: string)=> {
         console.log("Current UsER ID in RECIPIE_SERVICE : ",currentUserId)
+        const recipes=await this.recipeRepository.getRecipies(currentUserId);
+        console.log("recipies got  : ",recipes)
+
+        return recipes
     }
 
     getEnhancedDesc=async(description: string, regenerate: boolean)=>{

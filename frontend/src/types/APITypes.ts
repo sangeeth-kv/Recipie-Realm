@@ -5,4 +5,5 @@ export type APITypes={
     REFRESH:string;
     PROFILE:string;
     ADD_RECIPE:string;
+    GET_RECIPIES:string;
 }

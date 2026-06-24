@@ -26,6 +26,7 @@ export default class RecipeController implements IRecipeController{
 
             logger.debug("After setting image url");
 
+            //setting recipe data to send to service to process and save to db
             const recipeData: AddRecipeDTO = {
                 ...req.body,
                 images: imageUrls,
@@ -58,6 +59,8 @@ export default class RecipeController implements IRecipeController{
             }
 
             const recipies:IRecipe[]=await this.recipeService.getAllRecipies(currentUserId.toString());
+
+            console.log("Recipies got inside it: ",recipies)
 
             const response: GetRecipiesResponseDTO = {recipies};
 

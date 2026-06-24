@@ -12,6 +12,7 @@ import { recipeSchema, formatZodErrors } from "../../validation/recipeSchema";
 import { useUploadStore } from "../../app/uploadStore";
 import { useNavigate } from "react-router-dom";
 import { enhanceDescription } from "../../services/enhanceDescription";
+import toast from "react-hot-toast";
 // import { ZodError } from "zod";
 
 // ─── Form data type ───────────────────────────────────────────────────────────
@@ -207,6 +208,9 @@ const handleRegenerate = async () => {
       );
     } finally {
       setSubmitting(false);
+      toast.success(
+      "Recipe uploaded successfully. It is currently under AI review and will appear once approved."
+      );
     }
   };
 

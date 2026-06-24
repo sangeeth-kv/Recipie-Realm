@@ -21,10 +21,13 @@ import EmptyRecipe from "../../componets/Recipies/EmptyRecipie/EmptyRecipe";
 import FilterToggleButton from "../../componets/Recipies/FilterToggleButton/FilterToggleButton";
 import RecipeGrid from "../../componets/Recipies/RecipeGrid/RecipeGrid";
 import AddRecipeButton from "../../componets/Buttons/AddRecipeButton";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 import RecipeLoader from "../../componets/FallbackScreen/FallbackScreen";
+import { getRecipies } from "../../services/getRecipies";
 
 export default function Recipies() {
+
+  console.log("HIIIIIIIII")
 
   const navigate=useNavigate()
   const [recipes, setRecipes] = useState<IRecipe[]>([
@@ -258,6 +261,26 @@ export default function Recipies() {
 }
 ]);
 
+
+
+
+  useEffect(()=>{
+    getRecipies()
+    .then((data)=>{
+      console.log("data got in response of recipes : ",data)
+      setRecipes(data?.data.recipies);
+    })
+    .catch((err)=>{
+      console.log("ERROR : ",err)
+    })
+    .finally(()=>{
+      console.log("Completed recipie fetching..")
+    })
+  },[])
+
+
+
+
   const [filteredRecipes, setFilteredRecipes] = useState<IRecipe[]>([]);
   const [trending, setTrending] = useState<IRecipe[]>([]);
   const [category, setCategory] = useState("");
@@ -267,6 +290,11 @@ export default function Recipies() {
 
   useEffect(() => {
     let data = [...recipes];
+
+    console.log("Category : ",category)
+    console.log("SORT : ",sort)
+    console.log("SEARCH : ",search)
+    console.log("FILTERRECIPE : ",filteredRecipes)
 
     if (search) {
       data = data.filter(

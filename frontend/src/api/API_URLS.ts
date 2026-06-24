@@ -7,5 +7,6 @@ GET_ME:"/auth/me",
 REFRESH:"/auth/refresh-token",
 PROFILE:"/profiles",
 ADD_RECIPE:"/recipe/add-recipe",
+GET_RECIPIES:"/recipe",
 }
 

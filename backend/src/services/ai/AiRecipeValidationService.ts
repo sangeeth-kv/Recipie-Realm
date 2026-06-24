@@ -6,7 +6,7 @@ export interface RecipeValidationResult {
     aiFailed: boolean ;
     isValid: boolean;
     confidence: number;
-    reason: string;
+    reason?: string;
 }
 export default class AiRecipeValidationService {
 

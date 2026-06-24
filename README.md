@@ -3,8 +3,8 @@ Recipe platform.
 User can view, create recipies and also can do  chats with users.
 
 ## Features
-- User authentication
-- 
+- User authentication (JWT(AccessToken and RefreshToken))
+- Caching (Recipies cache , Enhance Description)
 - 
 
 
@@ -112,10 +112,13 @@ Home Page:
     In this page user can see the post (Following sheffs recipies,suggested recipies,etc..)
 Recipe page:
     In this user can search for recipie,filter,sort.
+
 Add Recipe:
     User can add recipies by entering recipe data and images. After that recipe created in backend and set the queue for worker and return response, Worker will do the 
     Nutrition extract from the incredients and calculate the calorie values etc.. 
-    Added recipe validation usind Gemini AI , It process the recipie details and return the valid or not
+    Added recipe validation usind Gemini AI , It process the recipie details.
+    the recipe has saved wheather it is valid or not, But the status of recipe approve give it is valid or not.
+    Recipie save and set recipeApproveStatus as "PENDING" default. and if the validtion is okay it set as "SUCCESS" and if the validatio failed it shows it is "FAILED"
 Profiles Page:
     user can view, and search for users. and also can follow the profiles.
 
